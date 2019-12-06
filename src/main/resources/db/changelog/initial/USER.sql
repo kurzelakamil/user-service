@@ -1,0 +1,23 @@
+CREATE TABLE if NOT EXISTS "user" (
+	id bigserial NOT NULL,
+	email varchar(255) NOT NULL,
+	name varchar(50) NOT NULL,
+	surname varchar(50) NOT NULL,
+	birth_date date NOT NULL,
+	phone_number_country_code varchar(5) NOT NULL,
+	phone_number_area_code varchar(5),
+	phone_number_number varchar(9),
+	nationality_id int8 NOT NULL,
+	pesel varchar(11),
+	passport_no varchar(15),
+	address_street varchar(50),
+    address_house_no varchar(5),
+    address_flat_no varchar(5),
+    address_city varchar(20),
+    address_state varchar(30),
+    address_zip_code varchar(6),
+    address_country varchar(30),
+	CONSTRAINT user_pk PRIMARY KEY (id),
+	CONSTRAINT email_un UNIQUE (email),
+	CONSTRAINT nationality_fkey FOREIGN KEY (nationality_id) REFERENCES nationality_dictionary(id)
+);
