@@ -35,7 +35,7 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Bean
-    public TokenStore tokenStore() {
+    public TokenStore jwtTokenStore() {
         return new JwtTokenStore(accessTokenConverter());
     }
 
@@ -50,7 +50,7 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
     @Primary
     public DefaultTokenServices tokenServices() {
         final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
+        defaultTokenServices.setTokenStore(jwtTokenStore());
         return defaultTokenServices;
     }
 

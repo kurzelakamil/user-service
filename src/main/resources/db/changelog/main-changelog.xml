@@ -12,4 +12,11 @@
             <sqlFile path="initial/INITIAL_INSERT.sql" relativeToChangelogFile="true" encoding="utf8" />
         </changeSet>
 
+        <changeSet id="2" author="kkurzela">
+            <comment>add status column to user table</comment>
+            <addColumn tableName="user_">
+                <column name="status" type="varchar(10)"></column>
+            </addColumn>
+        </changeSet>
+
 </databaseChangeLog>

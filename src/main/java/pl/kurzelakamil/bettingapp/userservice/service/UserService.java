@@ -1,28 +1,39 @@
 package pl.kurzelakamil.bettingapp.userservice.service;
 
+import javax.transaction.Transactional;
+
 import org.mapstruct.factory.Mappers;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import pl.kurzelakamil.bettingapp.userservice.dto.UserInputDto;
+import pl.kurzelakamil.bettingapp.userservice.dto.CreateUserDto;
 import pl.kurzelakamil.bettingapp.userservice.mapper.UserDetailsMapper;
 import pl.kurzelakamil.bettingapp.userservice.model.User;
 import pl.kurzelakamil.bettingapp.userservice.repository.UserRepository;
+import pl.kurzelakamil.bettingapp.userservice.saga.CreateUserSaga;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@AllArgsConstructor
+@Slf4j
 public class UserService {
 
-    private static final UserDetailsMapper MAPPER = Mappers.getMapper(UserDetailsMapper.class);
+    private static final UserDetailsMapper mapper = Mappers.getMapper(UserDetailsMapper.class);
+
     private UserRepository userRepository;
+    private CreateUserSaga createUserSaga;
+    private PasswordEncoder passwordEncoder;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public void createUser(UserInputDto userInputDto){
-        User user = MAPPER.userInputDtoToUser(userInputDto);
+    @Transactional
+    public User createUser(CreateUserDto createUserDto){
+        User user = mapper.createUserDtoToUserModel(createUserDto);
+        String password = passwordEncoder.encode(createUserDto.getPassword());
+        user.setStatus(User.UserStatus.PENDING);
         userRepository.save(user);
-        String hashedPassword = bCryptPasswordEncoder.encode(userInputDto.getPassword());
-
-
-        return;
+        log.info("Creating user: " + user.getId());
+        createUserSaga.checkUser(user, password);
+        return user;
     }
 }
