@@ -1,0 +1,1 @@
+INSERT INTO nationality_dictionary VALUES (1, 'POLAND');
